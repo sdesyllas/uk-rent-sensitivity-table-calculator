@@ -6,16 +6,16 @@ import os
 
 # Constants
 mortgage_payment = 1750
-bills = 120
-service_charge = 290
+bills = 100
+service_charge = 282
 mortgage_interest = 1330
 mortgage_interest_credit = 0.20 * mortgage_interest # £266
 income_tax_rate = 0.40
 ni_rate = 0.08
 management_fee_rate = 0.15
 
-# Rent levels from £2200 to £2700 in £50 increments
-rent_levels = np.arange(2000, 3000, 50)
+# Rent levels from £2100 to £2700 in £50 increments
+rent_levels = np.arange(2000, 2700, 50)
 
 # Prepare data
 data = []
