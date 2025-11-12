@@ -1,0 +1,55 @@
+# Generating rent sensitivity table for a UK flat with tax and management fees
+
+import pandas as pd
+import numpy as np
+import os
+
+# Constants
+mortgage_payment = 1750
+bills = 120
+service_charge = 290
+mortgage_interest = 1330
+mortgage_interest_credit = 0.20 * mortgage_interest # £266
+income_tax_rate = 0.40
+ni_rate = 0.08
+management_fee_rate = 0.15
+
+# Rent levels from £2200 to £2700 in £50 increments
+rent_levels = np.arange(2000, 3000, 50)
+
+# Prepare data
+data = []
+
+for rent in rent_levels:
+    management_fee = rent * management_fee_rate
+    taxable_profit = rent - management_fee - bills - service_charge
+    income_tax = taxable_profit * income_tax_rate
+    ni = taxable_profit * ni_rate
+    total_tax = income_tax - mortgage_interest_credit + ni
+    net_income = rent - management_fee - bills - service_charge - mortgage_payment - total_tax
+
+    data.append({
+        "Rent (£)": rent,
+        "Management Fee (£)": round(management_fee, 2),
+        "Taxable Profit (£)": round(taxable_profit, 2),
+        "Income Tax (£)": round(income_tax, 2),
+        "NI (£)": round(ni, 2),
+        "Total Tax Liability (£)": round(total_tax, 2),
+        "Net Monthly Income (£)": round(net_income, 2)
+    })
+
+# Create DataFrame
+df = pd.DataFrame(data)
+
+# Display table in console
+print("\n" + "="*100)
+print("RENT SENSITIVITY ANALYSIS - BARKING RIVERSIDE")
+print("="*100)
+print(df.to_string(index=False))
+print("="*100 + "\n")
+
+# Save to Excel
+output_path = "rent_sensitivity_barking_riverside.xlsx"
+df.to_excel(output_path, index=False)
+
+print("Created rent sensitivity table from £2200 to £2700 and saved as rent_sensitivity_barking_riverside.xlsx")
