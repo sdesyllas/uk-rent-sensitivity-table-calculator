@@ -12,21 +12,25 @@ mortgage_interest = 1330
 mortgage_interest_credit = 0.20 * mortgage_interest # £266
 income_tax_rate = 0.40
 ni_rate = 0.08
-management_fee_rate = 0.15
+management_fee_rate = 0.12
 
 # Rent levels from £2100 to £2700 in £50 increments
-rent_levels = np.arange(2000, 2700, 50)
+rent_levels = np.arange(1800, 2700, 50)
 
 # Prepare data
 data = []
 
+# Calculate cost of keeping flat empty (no rental income)
+empty_flat_cost = bills + service_charge + mortgage_payment  # Monthly cost with no income
+
 for rent in rent_levels:
     management_fee = rent * management_fee_rate
-    taxable_profit = rent - management_fee - bills - service_charge
+    taxable_profit = rent - management_fee - service_charge
     income_tax = taxable_profit * income_tax_rate
     ni = taxable_profit * ni_rate
     total_tax = income_tax - mortgage_interest_credit + ni
-    net_income = rent - management_fee - bills - service_charge - mortgage_payment - total_tax
+    net_income = rent - management_fee - service_charge - mortgage_payment - total_tax
+    savings_vs_empty = net_income + empty_flat_cost  # How much better off vs empty flat
 
     data.append({
         "Rent (£)": rent,
@@ -35,7 +39,8 @@ for rent in rent_levels:
         "Income Tax (£)": round(income_tax, 2),
         "NI (£)": round(ni, 2),
         "Total Tax Liability (£)": round(total_tax, 2),
-        "Net Monthly Income (£)": round(net_income, 2)
+        "Net Monthly Income (£)": round(net_income, 2),
+        "Savings vs Empty (£)": round(savings_vs_empty, 2)
     })
 
 # Create DataFrame
